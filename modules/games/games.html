@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +8,16 @@
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="games.css">
 </head>
+
 <body>
     <!-- התפריט יוזרק לכאן אוטומטית ע"י AppManager -->
-    
+
     <div class="main-content">
         <div class="header-actions">
             <h1>מרכז משחקים קלאסיים</h1>
             <p style="color: #7f8c8d; font-size: 1.1rem; margin-top: 10px;">בחר משחק כדי להתחיל</p>
         </div>
-        
+
         <div class="games-grid">
             <!-- נחש -->
             <div class="game-card" onclick="GamesManager.playGame('snake')">
@@ -44,6 +46,13 @@
                 <h2>שחמט (Chess)</h2>
                 <p>משחק אסטרטגיה קלאסי לשני שחקנים.</p>
             </div>
+
+            <!-- סופר מריו (חדש) -->
+            <div class="game-card" onclick="GamesManager.playGame('mario')">
+                <div class="game-icon">🍄</div>
+                <h2>סופר מריו (Super Mario)</h2>
+                <p>רוץ, קפוץ, אסוף מטבעות והבס אויבים בדרך לטירה.</p>
+            </div>
         </div>
     </div>
 
@@ -51,4 +60,5 @@
     <script src="../../js/AppManager.js"></script>
     <script src="games.js"></script>
 </body>
+
 </html>
