@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ספורט ולימוד תורה</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #172033;
+        }
+
+        main {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        section {
+            padding: 20px;
+            border-radius: 12px;
+            background: white;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+
+        input,
+        button {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>מעקב אישי</h1>
+        <div class="cards">
+            <section>
+                <h2>🏃 ספורט</h2>
+                <p id="sport-summary"></p>
+                <form data-type="sport">
+                    <label>סוג אימון<input name="name" required placeholder="למשל: הליכה"></label>
+                    <label>משך בדקות<input name="minutes" type="number" min="1" required></label>
+                    <button>שמירת אימון</button>
+                </form>
+                <ul id="sport-history"></ul>
+            </section>
+
+            <section>
+                <h2>📖 לימוד תורה</h2>
+                <p id="study-summary"></p>
+                <form data-type="study">
+                    <label>נושא הלימוד<input name="name" required placeholder="למשל: פרשת השבוע"></label>
+                    <label>משך בדקות<input name="minutes" type="number" min="1" required></label>
+                    <button>שמירת לימוד</button>
+                </form>
+                <ul id="study-history"></ul>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const storageKey = "lifePlatformActivities";
+
+        function loadActivities() {
+            try {
+                return JSON.parse(localStorage.getItem(storageKey)) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function today() {
+            const date = new Date();
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        }
+
+        function render() {
+            const activities = loadActivities();
+
+            for (const type of ["sport", "study"]) {
+                const entries = activities.filter(item => item.type === type);
+                const minutesToday = entries
+                    .filter(item => item.date === today())
+                    .reduce((sum, item) => sum + Number(item.minutes), 0);
+
+                document.getElementById(`${type}-summary`).textContent =
+                    `היום: ${minutesToday} דקות · ${entries.length} רישומים`;
+
+                const list = document.getElementById(`${type}-history`);
+                list.replaceChildren();
+
+                entries.slice(0, 5).forEach(item => {
+                    const li = document.createElement("li");
+                    li.textContent = `${item.name} — ${item.minutes} דקות (${item.date})`;
+                    list.appendChild(li);
+                });
+            }
+        }
+
+        document.querySelectorAll("form").forEach(form => {
+            form.addEventListener("submit", event => {
+                event.preventDefault();
+                const data = new FormData(form);
+                const activities = loadActivities();
+
+                activities.unshift({
+                    type: form.dataset.type,
+                    name: String(data.get("name")).trim(),
+                    minutes: Number(data.get("minutes")),
+                    date: today()
+                });
+
+                localStorage.setItem(storageKey, JSON.stringify(activities));
+                form.reset();
+                render();
+            });
+        });
+
+        render();
+    </script>
+</body>
+
+</html>
